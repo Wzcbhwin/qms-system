@@ -1,0 +1,1215 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QMS 质量整改追踪系统 · 登录</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ==================== 设计令牌 ==================== */
+:root {
+  /* 色彩 — 暖色调炭灰系 + 锻造琥珀 */
+  --forge-amber: oklch(72% 0.16 55);
+  --forge-amber-bright: oklch(78% 0.18 55);
+  --forge-amber-dim: oklch(55% 0.12 55);
+  --forge-glow: oklch(80% 0.20 50);
+
+  --bg-void: oklch(14% 0.008 45);
+  --bg-deep: oklch(17% 0.010 45);
+  --bg-surface: oklch(21% 0.012 45);
+  --bg-elevated: oklch(25% 0.014 45);
+  --bg-input: oklch(19% 0.010 45);
+
+  --border-subtle: oklch(30% 0.012 45);
+  --border-default: oklch(35% 0.014 45);
+  --border-focus: oklch(55% 0.14 55);
+
+  --text-primary: oklch(94% 0.008 45);
+  --text-secondary: oklch(68% 0.010 45);
+  --text-tertiary: oklch(50% 0.008 45);
+
+  --error: oklch(62% 0.22 25);
+  --error-bg: oklch(25% 0.04 25);
+  --error-border: oklch(40% 0.10 25);
+
+  --success: oklch(68% 0.15 145);
+
+  /* 排版 */
+  --font-display: 'Space Grotesk', system-ui, sans-serif;
+  --font-body: 'Noto Sans SC', system-ui, -apple-system, sans-serif;
+
+  /* 缓动 */
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+/* ==================== 基础重置 ==================== */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--text-primary);
+  background: var(--bg-void);
+  min-height: 100vh;
+  overflow-x: hidden;
+  font-kerning: normal;
+}
+
+button, input {
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+  border: none;
+  background: none;
+  outline: none;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+::selection {
+  background: oklch(72% 0.16 55 / 30%);
+  color: var(--text-primary);
+}
+
+/* ==================== 布局 ==================== */
+.login-shell {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  min-height: 100vh;
+}
+
+/* ==================== 左侧视觉面板 ==================== */
+.brand-panel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 48px 56px;
+  background: var(--bg-deep);
+  overflow: hidden;
+  border-right: 1px solid var(--border-subtle);
+}
+
+/* 锻造光效背景 */
+.forge-glow {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.forge-glow::before {
+  content: '';
+  position: absolute;
+  width: 700px;
+  height: 700px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(
+    circle,
+    oklch(55% 0.20 50 / 35%) 0%,
+    oklch(45% 0.15 50 / 15%) 30%,
+    transparent 65%
+  );
+  filter: blur(40px);
+  animation: forge-pulse 6s var(--ease-in-out) infinite;
+}
+
+.forge-glow::after {
+  content: '';
+  position: absolute;
+  width: 400px;
+  height: 400px;
+  bottom: 10%;
+  right: 5%;
+  background: radial-gradient(
+    circle,
+    oklch(60% 0.18 45 / 20%) 0%,
+    transparent 60%
+  );
+  filter: blur(30px);
+  animation: forge-pulse 8s var(--ease-in-out) infinite reverse;
+  animation-delay: -2s;
+}
+
+@keyframes forge-pulse {
+  0%, 100% {
+    opacity: 0.7;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.08);
+  }
+}
+
+/* 漂浮的火星粒子 */
+.embers {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.ember {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: oklch(75% 0.18 55 / 60%);
+  box-shadow: 0 0 6px oklch(75% 0.18 55 / 40%);
+  bottom: -10px;
+  animation: ember-rise linear infinite;
+}
+
+@keyframes ember-rise {
+  0% {
+    transform: translateY(0) translateX(0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(-100vh) translateX(var(--drift, 30px));
+    opacity: 0;
+  }
+}
+
+/* 品牌头部 */
+.brand-header {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.brand-mark {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--forge-amber), var(--forge-amber-dim));
+  border-radius: 10px;
+  box-shadow: 0 4px 20px oklch(55% 0.15 55 / 30%);
+}
+
+.brand-mark svg {
+  width: 26px;
+  height: 26px;
+  color: var(--bg-void);
+}
+
+.brand-name {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+}
+
+.brand-name span {
+  color: var(--forge-amber-bright);
+}
+
+/* 中心内容 */
+.brand-center {
+  position: relative;
+  z-index: 2;
+  max-width: 460px;
+}
+
+.brand-tagline {
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 4vw, 3.5rem);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  color: var(--text-primary);
+  margin-bottom: 24px;
+}
+
+.brand-tagline .accent {
+  color: var(--forge-amber-bright);
+  display: block;
+}
+
+.brand-desc {
+  font-size: 0.9375rem;
+  line-height: 1.7;
+  color: var(--text-secondary);
+  max-width: 380px;
+}
+
+/* 底部指标 */
+.brand-stats {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  gap: 40px;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.stat-value {
+  font-family: var(--font-display);
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+.stat-label {
+  font-size: 0.8125rem;
+  color: var(--text-tertiary);
+  letter-spacing: 0.02em;
+}
+
+/* ==================== 右侧表单面板 ==================== */
+.form-panel {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 48px 40px;
+  background: var(--bg-void);
+  position: relative;
+}
+
+.form-card {
+  width: 100%;
+  max-width: 400px;
+  animation: card-enter 600ms var(--ease-out-expo) both;
+}
+
+@keyframes card-enter {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.form-header {
+  margin-bottom: 36px;
+}
+
+.form-title {
+  font-family: var(--font-display);
+  font-size: 1.75rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+
+.form-subtitle {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+/* ==================== 输入字段 ==================== */
+.field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.field {
+  position: relative;
+}
+
+.field-label {
+  display: block;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+  letter-spacing: 0.01em;
+}
+
+.input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-icon {
+  position: absolute;
+  left: 14px;
+  width: 20px;
+  height: 20px;
+  color: var(--text-tertiary);
+  pointer-events: none;
+  transition: color 200ms var(--ease-out-quart);
+  z-index: 1;
+}
+
+.input-field {
+  width: 100%;
+  height: 52px;
+  padding: 0 16px 0 46px;
+  background: var(--bg-input);
+  border: 1px solid var(--border-default);
+  border-radius: 10px;
+  color: var(--text-primary);
+  font-size: 0.9375rem;
+  transition: border-color 200ms var(--ease-out-quart),
+              background 200ms var(--ease-out-quart),
+              box-shadow 200ms var(--ease-out-quart);
+}
+
+.input-field::placeholder {
+  color: var(--text-tertiary);
+}
+
+.input-field:hover {
+  border-color: oklch(40% 0.014 45);
+}
+
+.input-field:focus {
+  border-color: var(--border-focus);
+  background: oklch(20% 0.012 45);
+  box-shadow: 0 0 0 3px oklch(55% 0.14 55 / 12%);
+}
+
+.input-field:focus + .input-icon,
+.input-wrap:focus-within .input-icon {
+  color: var(--forge-amber-bright);
+}
+
+/* 密码可见性切换 */
+.pwd-toggle {
+  position: absolute;
+  right: 12px;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-radius: 6px;
+  color: var(--text-tertiary);
+  transition: color 150ms var(--ease-out-quart),
+              background 150ms var(--ease-out-quart);
+  z-index: 1;
+}
+
+.pwd-toggle:hover {
+  color: var(--text-secondary);
+  background: oklch(25% 0.012 45);
+}
+
+.pwd-toggle:active {
+  transform: scale(0.92);
+}
+
+.pwd-toggle svg {
+  width: 18px;
+  height: 18px;
+  transition: opacity 150ms var(--ease-out-quart);
+}
+
+.pwd-toggle .icon-eye-off {
+  display: none;
+}
+
+.pwd-toggle.visible .icon-eye {
+  display: none;
+}
+
+.pwd-toggle.visible .icon-eye-off {
+  display: block;
+}
+
+.input-field.has-toggle {
+  padding-right: 52px;
+}
+
+/* 错误状态 */
+.field.error .input-field {
+  border-color: var(--error-border);
+  background: var(--error-bg);
+}
+
+.field.error .input-icon {
+  color: var(--error);
+}
+
+.field-error {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  font-size: 0.8125rem;
+  color: var(--error);
+  opacity: 0;
+  transform: translateY(-4px);
+  transition: opacity 200ms var(--ease-out-quart),
+              transform 200ms var(--ease-out-quart);
+  pointer-events: none;
+}
+
+.field.error .field-error {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.field-error svg {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
+
+/* ==================== 选项行 ==================== */
+.options-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 4px;
+}
+
+/* 自定义复选框 */
+.checkbox-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.checkbox-wrap input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.checkbox-box {
+  width: 20px;
+  height: 20px;
+  border: 1.5px solid var(--border-default);
+  border-radius: 5px;
+  background: var(--bg-input);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 150ms var(--ease-out-quart),
+              background 150ms var(--ease-out-quart);
+  flex-shrink: 0;
+}
+
+.checkbox-box svg {
+  width: 12px;
+  height: 12px;
+  color: var(--bg-void);
+  opacity: 0;
+  transform: scale(0.5);
+  transition: opacity 150ms var(--ease-out-quart),
+              transform 150ms var(--ease-out-quart);
+}
+
+.checkbox-wrap input:checked + .checkbox-box {
+  border-color: var(--forge-amber);
+  background: var(--forge-amber);
+}
+
+.checkbox-wrap input:checked + .checkbox-box svg {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.checkbox-wrap input:focus-visible + .checkbox-box {
+  box-shadow: 0 0 0 3px oklch(55% 0.14 55 / 15%);
+}
+
+.checkbox-label {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+.forgot-link {
+  font-size: 0.875rem;
+  color: var(--forge-amber-bright);
+  font-weight: 500;
+  transition: opacity 150ms var(--ease-out-quart);
+}
+
+.forgot-link:hover {
+  opacity: 0.8;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* ==================== 登录按钮 ==================== */
+.btn-login {
+  width: 100%;
+  height: 52px;
+  margin-top: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: var(--forge-amber);
+  color: var(--bg-void);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  border-radius: 10px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: background 150ms var(--ease-out-quart),
+              transform 100ms var(--ease-out-quart),
+              box-shadow 200ms var(--ease-out-quart);
+  box-shadow: 0 4px 14px oklch(55% 0.15 55 / 25%);
+}
+
+.btn-login::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, oklch(80% 0.20 50 / 30%), transparent);
+  transform: translateX(-100%);
+  transition: transform 600ms var(--ease-out-quart);
+}
+
+.btn-login:hover:not(:disabled) {
+  background: var(--forge-amber-bright);
+  box-shadow: 0 6px 20px oklch(55% 0.15 55 / 35%);
+}
+
+.btn-login:hover:not(:disabled)::before {
+  transform: translateX(100%);
+}
+
+.btn-login:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.btn-login:disabled {
+  cursor: not-allowed;
+  opacity: 0.85;
+}
+
+.btn-login .btn-text {
+  transition: opacity 200ms var(--ease-out-quart);
+}
+
+.btn-login.loading .btn-text {
+  opacity: 0;
+}
+
+.btn-login .btn-spinner {
+  position: absolute;
+  opacity: 0;
+  transition: opacity 200ms var(--ease-out-quart);
+}
+
+.btn-login.loading .btn-spinner {
+  opacity: 1;
+}
+
+.spinner-ring {
+  width: 22px;
+  height: 22px;
+  border: 2.5px solid oklch(14% 0.008 45 / 40%);
+  border-top-color: var(--bg-void);
+  border-radius: 50%;
+  animation: spin 700ms linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ==================== 全局错误提示 ==================== */
+.alert-error {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  margin-bottom: 24px;
+  background: var(--error-bg);
+  border: 1px solid var(--error-border);
+  border-radius: 10px;
+  font-size: 0.875rem;
+  color: oklch(80% 0.08 25);
+  opacity: 0;
+  max-height: 0;
+  overflow: hidden;
+  transform: translateY(-8px);
+  transition: opacity 300ms var(--ease-out-quart),
+              max-height 300ms var(--ease-out-quart),
+              transform 300ms var(--ease-out-quart),
+              margin-bottom 300ms var(--ease-out-quart);
+}
+
+.alert-error.show {
+  opacity: 1;
+  max-height: 80px;
+  transform: translateY(0);
+  animation: shake 400ms var(--ease-out-quart);
+}
+
+.alert-error svg {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  color: var(--error);
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-6px); }
+  40% { transform: translateX(5px); }
+  60% { transform: translateX(-3px); }
+  80% { transform: translateX(2px); }
+}
+
+/* ==================== 页脚 ==================== */
+.form-footer {
+  margin-top: 40px;
+  text-align: center;
+  font-size: 0.8125rem;
+  color: var(--text-tertiary);
+  line-height: 1.6;
+}
+
+.form-footer a {
+  color: var(--forge-amber-bright);
+  font-weight: 500;
+}
+
+.form-footer a:hover {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* ==================== 响应式 ==================== */
+@media (max-width: 860px) {
+  .login-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .brand-panel {
+    display: none;
+  }
+
+  .form-panel {
+    padding: 32px 24px;
+  }
+}
+
+@media (max-width: 480px) {
+  .form-panel {
+    padding: 24px 20px;
+    justify-content: flex-start;
+    padding-top: 80px;
+  }
+
+  .form-card {
+    max-width: 100%;
+  }
+}
+
+/* ==================== 可访问性 ==================== */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .forge-glow::before,
+  .forge-glow::after {
+    animation: none;
+    opacity: 0.8;
+  }
+
+  .ember {
+    display: none;
+  }
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+</style>
+</head>
+<body>
+
+<div class="login-shell">
+
+  <!-- ======== 左侧品牌视觉面板 ======== -->
+  <aside class="brand-panel">
+    <div class="forge-glow"></div>
+    <div class="embers" id="embers"></div>
+
+    <header class="brand-header">
+      <div class="brand-mark">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+          <path d="M2 17l10 5 10-5"/>
+          <path d="M2 12l10 5 10-5"/>
+        </svg>
+      </div>
+      <div class="brand-name">QMS<span>·</span>质量追踪</div>
+    </header>
+
+    <div class="brand-center">
+      <h1 class="brand-tagline">
+        精密锻造
+        <span class="accent">品质为先</span>
+      </h1>
+      <p class="brand-desc">
+        大型锻件质量整改追踪系统，覆盖问题录入、根因分析、纠正措施、效果验证全流程闭环管理，助力锻造质量持续改进。
+      </p>
+    </div>
+
+    <div class="brand-stats">
+      <div class="stat-item">
+        <div class="stat-value">1,247</div>
+        <div class="stat-label">已追踪问题</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value">98.6%</div>
+        <div class="stat-label">闭环率</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value">3.2天</div>
+        <div class="stat-label">平均整改周期</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ======== 右侧登录表单 ======== -->
+  <main class="form-panel">
+    <div class="form-card">
+
+      <div class="form-header">
+        <h2 class="form-title">欢迎回来</h2>
+        <p class="form-subtitle">请输入您的账号信息以登录系统</p>
+      </div>
+
+      <!-- 全局错误提示 -->
+      <div class="alert-error" id="alertError" role="alert">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="12" y1="8" x2="12" y2="12"/>
+          <line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
+        <span id="alertText">账号或密码错误，请重试</span>
+      </div>
+
+      <form class="field-group" id="loginForm" novalidate>
+
+        <!-- 账号输入 -->
+        <div class="field" id="fieldAccount">
+          <label class="field-label" for="account">账号</label>
+          <div class="input-wrap">
+            <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+              <polyline points="22,6 12,13 2,6"/>
+            </svg>
+            <input
+              type="text"
+              id="account"
+              class="input-field"
+              placeholder="邮箱或手机号"
+              autocomplete="username"
+              aria-describedby="accountError"
+            >
+          </div>
+          <div class="field-error" id="accountError">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <line x1="12" y1="8" x2="12" y2="12"/>
+              <line x1="12" y1="16" x2="12.01" y2="16"/>
+            </svg>
+            <span>请输入有效的邮箱或手机号</span>
+          </div>
+        </div>
+
+        <!-- 密码输入 -->
+        <div class="field" id="fieldPassword">
+          <label class="field-label" for="password">密码</label>
+          <div class="input-wrap">
+            <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            </svg>
+            <input
+              type="password"
+              id="password"
+              class="input-field has-toggle"
+              placeholder="请输入密码"
+              autocomplete="current-password"
+              aria-describedby="passwordError"
+            >
+            <button type="button" class="pwd-toggle" id="pwdToggle" aria-label="切换密码可见性">
+              <svg class="icon-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                <circle cx="12" cy="12" r="3"/>
+              </svg>
+              <svg class="icon-eye-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+                <line x1="1" y1="1" x2="23" y2="23"/>
+              </svg>
+            </button>
+          </div>
+          <div class="field-error" id="passwordError">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <line x1="12" y1="8" x2="12" y2="12"/>
+              <line x1="12" y1="16" x2="12.01" y2="16"/>
+            </svg>
+            <span>密码不能为空</span>
+          </div>
+        </div>
+
+        <!-- 记住我 + 忘记密码 -->
+        <div class="options-row">
+          <label class="checkbox-wrap">
+            <input type="checkbox" id="remember">
+            <span class="checkbox-box">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+            </span>
+            <span class="checkbox-label">记住我</span>
+          </label>
+          <a href="#" class="forgot-link" id="forgotLink">忘记密码?</a>
+        </div>
+
+        <!-- 登录按钮 -->
+        <button type="submit" class="btn-login" id="btnLogin">
+          <span class="btn-text">登 录</span>
+          <span class="btn-spinner">
+            <span class="spinner-ring"></span>
+          </span>
+        </button>
+
+      </form>
+
+      <div class="form-footer">
+        演示账号：admin@dafor.com / 123456（管理员）<br>
+        其他账号：quality / forge / tech / outsource / jianyan @dafor.com
+      </div>
+
+    </div>
+  </main>
+
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  // ==================== 火星粒子生成 ====================
+  function initEmbers() {
+    const container = document.getElementById('embers');
+    if (!container) return;
+    const count = 15;
+    for (let i = 0; i < count; i++) {
+      const ember = document.createElement('div');
+      ember.className = 'ember';
+      ember.style.left = Math.random() * 100 + '%';
+      ember.style.animationDuration = (8 + Math.random() * 7) + 's';
+      ember.style.animationDelay = (Math.random() * 10) + 's';
+      ember.style.setProperty('--drift', (Math.random() * 80 - 40) + 'px');
+      ember.style.opacity = 0.3 + Math.random() * 0.5;
+      const size = 2 + Math.random() * 3;
+      ember.style.width = size + 'px';
+      ember.style.height = size + 'px';
+      container.appendChild(ember);
+    }
+  }
+
+  // ==================== 密码可见性切换 ====================
+  function initPasswordToggle() {
+    const toggle = document.getElementById('pwdToggle');
+    const password = document.getElementById('password');
+    if (!toggle || !password) return;
+
+    toggle.addEventListener('click', function() {
+      const isVisible = toggle.classList.toggle('visible');
+      password.type = isVisible ? 'text' : 'password';
+      // 切换后保持焦点
+      password.focus();
+      // 将光标移到末尾
+      const len = password.value.length;
+      password.setSelectionRange(len, len);
+    });
+  }
+
+  // ==================== 本地降级登录（服务器不可达时使用） ====================
+  var LOCAL_FALLBACK_USERS = [
+    { id: 'USR-ADMIN', name: '系统管理员', account: 'admin@dafor.com', phone: '13800000001', password: '123456', role: 'admin', unit: '', status: 'active', remark: '默认管理员账号' },
+    { id: 'USR-QUALITY', name: '张质量', account: 'quality@dafor.com', phone: '13800000002', password: '123456', role: 'quality', unit: '', status: 'active', remark: '质量部门' },
+    { id: 'USR-FORGE', name: '李锻造', account: 'forge@dafor.com', phone: '13800000003', password: '123456', role: 'responsible', unit: '大锻锻造车间', status: 'active', remark: '锻造车间责任人' },
+    { id: 'USR-TECH', name: '王技术', account: 'tech@dafor.com', phone: '13800000004', password: '123456', role: 'responsible', unit: '大锻技术中心', status: 'active', remark: '技术中心责任人' },
+    { id: 'USR-OUT', name: '赵外协', account: 'outsource@dafor.com', phone: '13800000005', password: '123456', role: 'responsible', unit: '外协机加工', status: 'active', remark: '外协机加工责任人' },
+    { id: 'USR-INIT', name: '孙检验员', account: 'jianyan@dafor.com', phone: '13800000006', password: '123456', role: 'initiator', unit: '大锻锻造车间', status: 'active', remark: '锻造车间检验员' },
+  ];
+
+  function tryLocalLogin(accountVal, passwordVal) {
+    var user = LOCAL_FALLBACK_USERS.find(function(u) {
+      return (u.account === accountVal || u.phone === accountVal) && u.password === passwordVal;
+    });
+    if (!user) return { success: false, error: '账号或密码错误' };
+    if (user.status !== 'active') return { success: false, error: '账号已被停用，请联系管理员' };
+    var safe = Object.assign({}, user);
+    delete safe.password;
+    return { success: true, data: safe, offline: true };
+  }
+
+  // ==================== 表单验证 ====================
+  function validateAccount(value) {
+    if (!value.trim()) return false;
+    // 邮箱或手机号
+    const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const phoneRe = /^1[3-9]\d{9}$/;
+    return emailRe.test(value.trim()) || phoneRe.test(value.trim());
+  }
+
+  function validatePassword(value) {
+    return value.length >= 1;
+  }
+
+  function showFieldError(fieldId, message) {
+    const field = document.getElementById(fieldId);
+    if (!field) return;
+    field.classList.add('error');
+    if (message) {
+      const errorSpan = field.querySelector('.field-error span');
+      if (errorSpan) errorSpan.textContent = message;
+    }
+  }
+
+  function clearFieldError(fieldId) {
+    const field = document.getElementById(fieldId);
+    if (!field) return;
+    field.classList.remove('error');
+  }
+
+  function showGlobalError(message) {
+    const alert = document.getElementById('alertError');
+    const text = document.getElementById('alertText');
+    if (!alert || !text) return;
+    text.textContent = message;
+    alert.classList.add('show');
+    // 重新触发抖动动画
+    alert.style.animation = 'none';
+    void alert.offsetWidth;
+    alert.style.animation = '';
+  }
+
+  function hideGlobalError() {
+    const alert = document.getElementById('alertError');
+    if (!alert) return;
+    alert.classList.remove('show');
+  }
+
+  // ==================== 登录提交 ====================
+  function initLoginSubmit() {
+    const form = document.getElementById('loginForm');
+    const btn = document.getElementById('btnLogin');
+    const account = document.getElementById('account');
+    const password = document.getElementById('password');
+    const remember = document.getElementById('remember');
+    if (!form || !btn) return;
+
+    // 输入时清除错误
+    [account, password].forEach(function(input) {
+      if (!input) return;
+      input.addEventListener('input', function() {
+        hideGlobalError();
+        if (input === account) clearFieldError('fieldAccount');
+        if (input === password) clearFieldError('fieldPassword');
+      });
+    });
+
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      hideGlobalError();
+
+      const accountValue = account.value.trim();
+      const passwordValue = password.value;
+
+      // 验证
+      let hasError = false;
+
+      if (!validateAccount(accountValue)) {
+        showFieldError('fieldAccount', accountValue ? '请输入有效的邮箱或手机号' : '请输入邮箱或手机号');
+        hasError = true;
+      }
+
+      if (!validatePassword(passwordValue)) {
+        showFieldError('fieldPassword', '密码不能为空');
+        hasError = true;
+      }
+
+      if (hasError) return;
+
+      // 登录请求
+      btn.classList.add('loading');
+      btn.disabled = true;
+
+      fetch('/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ account: accountValue, password: passwordValue })
+      })
+        .then(function(res) { return res.json(); })
+        .then(function(result) {
+          btn.classList.remove('loading');
+          btn.disabled = false;
+
+          if (result.success && result.data) {
+            // 存储登录信息到 sessionStorage（关闭浏览器后自动清除）
+            sessionStorage.setItem('qms_user', JSON.stringify(result.data));
+            // 记住我 — 用 localStorage 持久化账号
+            if (remember.checked) {
+              localStorage.setItem('qms_remember_account', accountValue);
+            } else {
+              localStorage.removeItem('qms_remember_account');
+            }
+            // 显示成功提示
+            var alertEl = document.getElementById('alertError');
+            var alertText = document.getElementById('alertText');
+            if (alertEl && alertText) {
+              alertEl.style.borderColor = 'oklch(55% 0.12 145)';
+              alertEl.style.background = 'oklch(25% 0.04 145)';
+              alertText.textContent = '登录成功，正在跳转...';
+              alertEl.querySelector('svg').style.color = 'oklch(68% 0.15 145)';
+              alertEl.classList.add('show');
+            }
+            setTimeout(function() {
+              window.location.href = 'index.html';
+            }, 600);
+          } else {
+            showGlobalError(result.error || '登录失败，请重试');
+            password.focus();
+            password.select();
+          }
+        })
+        .catch(function(err) {
+          btn.classList.remove('loading');
+          btn.disabled = false;
+          // 服务器不可达 — 尝试本地降级登录
+          var localResult = tryLocalLogin(accountValue, passwordValue);
+          if (localResult.success) {
+            localResult.data.offline = true;
+            sessionStorage.setItem('qms_user', JSON.stringify(localResult.data));
+            if (remember.checked) {
+              localStorage.setItem('qms_remember_account', accountValue);
+            } else {
+              localStorage.removeItem('qms_remember_account');
+            }
+            var alertEl2 = document.getElementById('alertError');
+            var alertText2 = document.getElementById('alertText');
+            if (alertEl2 && alertText2) {
+              alertEl2.style.borderColor = 'oklch(65% 0.12 70)';
+              alertEl2.style.background = 'oklch(25% 0.04 70)';
+              alertText2.textContent = '登录成功，正在跳转...';
+              alertEl2.querySelector('svg').style.color = 'oklch(70% 0.15 70)';
+              alertEl2.classList.add('show');
+            }
+            setTimeout(function() {
+              window.location.href = 'index.html';
+            }, 800);
+          } else {
+            // 本地验证也失败 — 账号或密码错误
+            showGlobalError('账号或密码错误，请重试');
+            password.focus();
+            password.select();
+          }
+        });
+    });
+  }
+
+  // ==================== 记住我回填 ====================
+  function restoreRememberedAccount() {
+    var saved = localStorage.getItem('qms_remember_account');
+    var account = document.getElementById('account');
+    var remember = document.getElementById('remember');
+    if (saved && account && remember) {
+      account.value = saved;
+      remember.checked = true;
+    }
+  }
+
+  // ==================== 忘记密码 ====================
+  function initForgotPassword() {
+    var link = document.getElementById('forgotLink');
+    if (!link) return;
+    link.addEventListener('click', function(e) {
+      e.preventDefault();
+      alert('请联系系统管理员重置密码。\n邮箱：admin@dafor.com\n电话：010-8888-0000');
+    });
+  }
+
+  function initContactLink() {
+    var link = document.getElementById('contactLink');
+    if (!link) return;
+    link.addEventListener('click', function(e) {
+      e.preventDefault();
+      alert('技术支持\n邮箱：support@dafor.com\n工作时间：周一至周五 8:30-17:30');
+    });
+  }
+
+  // ==================== 初始化 ====================
+  document.addEventListener('DOMContentLoaded', function() {
+    initEmbers();
+    initPasswordToggle();
+    initLoginSubmit();
+    restoreRememberedAccount();
+    initForgotPassword();
+  });
+})();
+</script>
+
+</body>
+</html>
