@@ -1,0 +1,9 @@
+# 忽略文件
+node_modules/
+*.db
+*.db-shm
+*.db-wal
+.env
+.DS_Store
+Thumbs.db
+.workbuddy/
