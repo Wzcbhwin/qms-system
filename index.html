@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>质量QMS整改追踪系统</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script>
+    // 鉴权守卫 — 未登录直接跳转登录页
+    (function() {
+      var user = sessionStorage.getItem('qms_user');
+      if (!user) {
+        window.location.href = 'login.html';
+      }
+    })();
+  </script>
+</head>
+<body>
+  <div class="app-shell" id="app">
+    <!-- 侧边栏 -->
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <div class="sidebar-brand-icon">Q</div>
+        <div class="sidebar-brand-text">
+          QMS 追踪系统
+          <span>质量整改闭环</span>
+        </div>
+      </div>
+      <nav class="sidebar-nav">
+        <div class="sidebar-nav-section">主导航</div>
+        <a class="sidebar-nav-item active" data-route="dashboard">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+          数据看板
+          <span class="sidebar-nav-badge" id="nav-overdue-count" style="display:none">0</span>
+        </a>
+        <a class="sidebar-nav-item" data-route="entry">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+          问题录入
+        </a>
+        <a class="sidebar-nav-item" data-route="import">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
+          批量导入
+        </a>
+        <div class="sidebar-nav-section">协作</div>
+        <a class="sidebar-nav-item" data-route="tencent-docs">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg>
+          腾讯文档同步
+        </a>
+        <a class="sidebar-nav-item" data-route="push-settings">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          定时推送
+        </a>
+        <div class="sidebar-nav-section">系统</div>
+        <a class="sidebar-nav-item" data-route="authorization">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4M21 12c0 5-3.5 7.5-8.5 9.5C7.5 19.5 4 17 4 12V6l8-3 8 3v6z"/></svg>
+          账号授权
+        </a>
+        <a class="sidebar-nav-item" data-route="user-mgmt" id="nav-user-mgmt">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          账号管理
+        </a>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="user-info-card" id="user-info-card">
+          <div class="user-avatar" id="user-avatar"></div>
+          <div class="user-detail">
+            <div class="user-name" id="user-name">--</div>
+            <div class="user-role-badge" id="user-role-badge">--</div>
+          </div>
+          <button class="logout-btn" id="logout-btn" title="退出登录">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- 顶栏 -->
+    <header class="header">
+      <div class="header-search">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+        <input type="text" id="global-search" placeholder="搜索生产编号、产品名称、问题描述…">
+      </div>
+      <div class="header-actions">
+        <button class="icon-btn" id="theme-toggle" title="切换主题">
+          <svg id="theme-icon-sun" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+          <svg id="theme-icon-moon" class="hidden" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
+        <button class="btn btn-primary btn-sm" id="btn-new-issue">
+          <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+          新建问题
+        </button>
+      </div>
+    </header>
+
+    <!-- 主内容 -->
+    <main class="main">
+      <div class="main-inner" id="main-content">
+        <!-- 动态渲染 -->
+      </div>
+    </main>
+  </div>
+
+  <!-- 模态弹窗容器 -->
+  <div class="modal-overlay" id="modal-overlay"></div>
+  <!-- Toast 容器 -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <script src="js/data.js"></script>
+  <script src="js/charts.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
